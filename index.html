@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ancient World Grand Strategy</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .province { border: 1px solid #ccc; padding: 10px; margin: 10px; }
+        #map { width: 800px; height: 600px; background: #e0f0e0; }
+    </style>
+</head>
+<body>
+    <h1>Ancient World Grand Strategy (0 AD)</h1>
+    <div id="game-info">
+        Year: <span id="year">0</span> AD
+        <button id="next-turn">Next Turn</button>
+    </div>
+    <div id="provinces"></div>
+    <canvas id="map"></canvas>
+    
+    <script type="module">
+        import { createTestGame } from './src/engine/Game.js';
+        
+        const game = createTestGame();
+        updateDisplay();
+        
+        document.getElementById('next-turn').addEventListener('click', () => {
+            game.processTurn();
+            updateDisplay();
+        });
+        
+        function updateDisplay() {
+            document.getElementById('year').textContent = game.year;
+            const state = game.getState();
+            const provincesDiv = document.getElementById('provinces');
+            provincesDiv.innerHTML = '';
+            
+            state.provinces.forEach(prov => {
+                const div = document.createElement('div');
+                div.className = 'province';
+                div.innerHTML = `
+                    <h3>${prov.name}</h3>
+                    Population: ${prov.population.toLocaleString()}<br>
+                    Grain: ${prov.resources.grain.toFixed(0)}
+                `;
+                provincesDiv.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
